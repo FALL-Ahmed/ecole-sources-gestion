@@ -3,6 +3,22 @@ import React from 'react';
 import { Dashboard } from './Dashboard';
 import { UserManagement } from './admin/UserManagement';
 import { CourseManagement } from './admin/CourseManagement';
+import { GradeManagement } from './admin/GradeManagement';
+import { ScheduleManagement } from './admin/ScheduleManagement';
+import { AttendanceManagement } from './admin/AttendanceManagement';
+import { ReportManagement } from './admin/ReportManagement';
+import { Statistics } from './admin/Statistics';
+import { Settings } from './admin/Settings';
+import { ProfessorCourses } from './professor/ProfessorCourses';
+import { CourseMaterials } from './professor/CourseMaterials';
+import { ProfessorAttendance } from './professor/ProfessorAttendance';
+import { ProfessorSchedule } from './professor/ProfessorSchedule';
+import { GradeInput } from './professor/GradeInput';
+import { StudentSchedule } from './student/StudentSchedule';
+import { StudentCourses } from './student/StudentCourses';
+import { StudentGrades } from './student/StudentGrades';
+import { StudentAttendance } from './student/StudentAttendance';
+import { StudentMaterials } from './student/StudentMaterials';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface MainContentProps {
@@ -13,23 +29,81 @@ export function MainContent({ activeSection }: MainContentProps) {
   const { user } = useAuth();
 
   const renderContent = () => {
-    switch (activeSection) {
-      case 'dashboard':
-        return <Dashboard />;
-      case 'users':
-        return user?.role === 'admin' ? <UserManagement /> : <Dashboard />;
-      case 'courses':
-        return user?.role === 'admin' ? <CourseManagement /> : <Dashboard />;
-      default:
-        return (
-          <div className="p-6">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold mb-4">Section en développement</h2>
-              <p className="text-gray-600">Cette fonctionnalité sera bientôt disponible.</p>
-            </div>
-          </div>
-        );
+    // Si utilisateur est admin
+    if (user?.role === 'admin') {
+      switch (activeSection) {
+        case 'dashboard':
+          return <Dashboard />;
+        case 'users':
+          return <UserManagement />;
+        case 'courses':
+          return <CourseManagement />;
+        case 'grades':
+          return <GradeManagement />;
+        case 'schedule':
+          return <ScheduleManagement />;
+        case 'attendance':
+          return <AttendanceManagement />;
+        case 'reports':
+          return <ReportManagement />;
+        case 'stats':
+          return <Statistics />;
+        case 'settings':
+          return <Settings />;
+        default:
+          return <Dashboard />;
+      }
     }
+    
+    // Si utilisateur est professeur
+    if (user?.role === 'professor') {
+      switch (activeSection) {
+        case 'dashboard':
+          return <Dashboard />;
+        case 'my-courses':
+          return <ProfessorCourses />;
+        case 'course-materials':
+          return <CourseMaterials />;
+        case 'attendance-mgmt':
+          return <ProfessorAttendance />;
+        case 'schedule-view':
+          return <ProfessorSchedule />;
+        case 'grades-input':
+          return <GradeInput />;
+        default:
+          return <Dashboard />;
+      }
+    }
+    
+    // Si utilisateur est étudiant
+    if (user?.role === 'student') {
+      switch (activeSection) {
+        case 'dashboard':
+          return <Dashboard />;
+        case 'schedule-view':
+          return <StudentSchedule />;
+        case 'my-courses':
+          return <StudentCourses />;
+        case 'my-grades':
+          return <StudentGrades />;
+        case 'my-attendance':
+          return <StudentAttendance />;
+        case 'course-materials':
+          return <StudentMaterials />;
+        default:
+          return <Dashboard />;
+      }
+    }
+    
+    // Section en développement par défaut
+    return (
+      <div className="p-6">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-4">Section en développement</h2>
+          <p className="text-gray-600">Cette fonctionnalité sera bientôt disponible.</p>
+        </div>
+      </div>
+    );
   };
 
   return (

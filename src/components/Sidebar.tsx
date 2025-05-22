@@ -12,7 +12,10 @@ import {
   UserCheck,
   LogOut,
   BarChart3,
-  Settings
+  Settings,
+  FileSpreadsheet,
+  Upload,
+  Clock
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -37,16 +40,18 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           { id: 'grades', label: 'Gestion Notes', icon: GraduationCap },
           { id: 'schedule', label: 'Emploi du Temps', icon: Calendar },
           { id: 'attendance', label: 'Gestion Absences', icon: UserCheck },
-          { id: 'reports', label: 'Rapports', icon: BarChart3 },
+          { id: 'reports', label: 'Bulletins Scolaires', icon: FileSpreadsheet },
+          { id: 'stats', label: 'Statistiques', icon: BarChart3 },
           { id: 'settings', label: 'Paramètres', icon: Settings }
         ];
       case 'professor':
         return [
           ...commonItems,
           { id: 'my-courses', label: 'Mes Cours', icon: BookOpen },
-          { id: 'course-materials', label: 'Supports de Cours', icon: FileText },
+          { id: 'course-materials', label: 'Supports de Cours', icon: Upload },
           { id: 'attendance-mgmt', label: 'Gestion Absences', icon: UserCheck },
-          { id: 'schedule-view', label: 'Emploi du Temps', icon: Calendar }
+          { id: 'schedule-view', label: 'Emploi du Temps', icon: Calendar },
+          { id: 'grades-input', label: 'Saisie des Notes', icon: GraduationCap },
         ];
       case 'student':
         return [
@@ -54,6 +59,7 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           { id: 'schedule-view', label: 'Emploi du Temps', icon: Calendar },
           { id: 'my-courses', label: 'Mes Cours', icon: BookOpen },
           { id: 'my-grades', label: 'Notes & Bulletins', icon: GraduationCap },
+          { id: 'my-attendance', label: 'Mes Absences', icon: Clock },
           { id: 'course-materials', label: 'Supports de Cours', icon: FileText }
         ];
       default:
@@ -64,14 +70,14 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
   const menuItems = getMenuItems();
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
+    <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col shadow-sm">
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-blue-900">Sources des Sciences</h2>
         <p className="text-sm text-gray-600 mt-1">{user?.name}</p>
         <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
       </div>
       
-      <nav className="flex-1 p-4">
+      <nav className="flex-1 p-4 overflow-y-auto">
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;

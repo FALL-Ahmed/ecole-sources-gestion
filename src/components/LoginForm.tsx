@@ -96,6 +96,11 @@ export function LoginForm() {
                 <p><strong>Mot de passe:</strong> password123</p>
               </div>
             </div>
+            
+            <div className="mt-4 text-center text-xs text-gray-500">
+              <p>© 2025 Sources des Sciences - Tous droits réservés</p>
+              <a href="#" className="text-blue-500 hover:underline mt-1 inline-block">Politique de confidentialité</a>
+            </div>
           </CardContent>
         </Card>
       </div>
