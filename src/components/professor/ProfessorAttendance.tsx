@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -17,26 +17,25 @@ import {
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { CalendarIcon, FileDown, Save } from 'lucide-react';
+import { CalendarIcon, Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const classes = ['6ème A', '6ème B', '5ème A', '4ème B'];
 const subjects = ['Mathématiques', 'Français', 'Histoire-Géographie', 'Sciences', 'Anglais', 'Espagnol', 'Arts Plastiques', 'Musique', 'EPS'];
 
 const students = [
-  { id: 1, name: 'Alice Dupont', present: true, justified: false, comment: '' },
-  { id: 2, name: 'Baptiste Martin', present: true, justified: false, comment: '' },
-  { id: 3, name: 'Clara Bernard', present: false, justified: true, comment: 'Rendez-vous médical' },
-  { id: 4, name: 'David Petit', present: true, justified: false, comment: '' },
-  { id: 5, name: 'Emma Richard', present: false, justified: false, comment: '' },
-  { id: 6, name: 'Félix Moreau', present: true, justified: false, comment: '' },
-  { id: 7, name: 'Gaëlle Thomas', present: true, justified: false, comment: '' },
-  { id: 8, name: 'Hugo Laurent', present: true, justified: false, comment: '' },
+  { id: 1, name: 'Alice Dupont', present: true, justified: false },
+  { id: 2, name: 'Baptiste Martin', present: true, justified: false },
+  { id: 3, name: 'Clara Bernard', present: false, justified: true },
+  { id: 4, name: 'David Petit', present: true, justified: false },
+  { id: 5, name: 'Emma Richard', present: false, justified: false },
+  { id: 6, name: 'Félix Moreau', present: true, justified: false },
+  { id: 7, name: 'Gaëlle Thomas', present: true, justified: false },
+  { id: 8, name: 'Hugo Laurent', present: true, justified: false },
 ];
 
 export function ProfessorAttendance() {
@@ -44,6 +43,22 @@ export function ProfessorAttendance() {
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [date, setDate] = useState<Date>(new Date());
   const [attendanceData, setAttendanceData] = useState(students);
+
+  // Check if we have prefilled data from the schedule view
+  useEffect(() => {
+    const preselectedClass = localStorage.getItem('selectedAttendanceClass');
+    const preselectedSubject = localStorage.getItem('selectedAttendanceSubject');
+    
+    if (preselectedClass) {
+      setSelectedClass(preselectedClass);
+      localStorage.removeItem('selectedAttendanceClass');
+    }
+    
+    if (preselectedSubject) {
+      setSelectedSubject(preselectedSubject);
+      localStorage.removeItem('selectedAttendanceSubject');
+    }
+  }, []);
 
   const handlePresentChange = (studentId: number, present: boolean) => {
     setAttendanceData(prevData => 
@@ -65,27 +80,10 @@ export function ProfessorAttendance() {
     );
   };
 
-  const handleCommentChange = (studentId: number, comment: string) => {
-    setAttendanceData(prevData => 
-      prevData.map(student => 
-        student.id === studentId 
-          ? { ...student, comment } 
-          : student
-      )
-    );
-  };
-
   const saveAttendance = () => {
     toast({
       title: "Présences enregistrées",
       description: `Les présences pour la classe ${selectedClass} du ${format(date, 'dd/MM/yyyy')} ont été sauvegardées.`,
-    });
-  };
-
-  const exportAttendance = () => {
-    toast({
-      title: "Export en cours",
-      description: `Les données de présence sont en cours d'exportation au format Excel.`,
     });
   };
 
@@ -183,7 +181,6 @@ export function ProfessorAttendance() {
                     <TableHead>Élève</TableHead>
                     <TableHead>Présent</TableHead>
                     <TableHead>Absence justifiée</TableHead>
-                    <TableHead className="w-1/3">Commentaire</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -209,28 +206,16 @@ export function ProfessorAttendance() {
                           }
                         />
                       </TableCell>
-                      <TableCell>
-                        <Input
-                          placeholder="Raison de l'absence..."
-                          value={student.comment}
-                          onChange={(e) => handleCommentChange(student.id, e.target.value)}
-                          disabled={student.present}
-                        />
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </div>
             
-            <div className="mt-6 flex flex-wrap gap-4">
+            <div className="mt-6">
               <Button onClick={saveAttendance}>
                 <Save className="mr-2 h-4 w-4" />
                 Enregistrer
-              </Button>
-              <Button variant="outline" onClick={exportAttendance}>
-                <FileDown className="mr-2 h-4 w-4" />
-                Exporter
               </Button>
             </div>
           </CardContent>

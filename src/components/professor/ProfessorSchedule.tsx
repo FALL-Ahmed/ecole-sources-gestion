@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Données de l'emploi du temps
 const scheduleData = {
@@ -41,6 +42,7 @@ const scheduleData = {
 export function ProfessorSchedule() {
   const [selectedDay, setSelectedDay] = useState<string>('Lundi');
   const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+  const navigate = useNavigate();
   
   // Calcul du nombre total d'heures de cours
   const totalHours = Object.values(scheduleData).reduce((acc, daySchedule) => {
@@ -54,6 +56,14 @@ export function ProfessorSchedule() {
       uniqueClasses.add(session.class);
     });
   });
+
+  // Fonction pour naviguer vers la gestion des présences avec la classe préremplie
+  const handleSessionClick = (session) => {
+    // We'll simulate navigation with state passing to prefill the attendance form
+    localStorage.setItem('selectedAttendanceClass', session.class);
+    localStorage.setItem('selectedAttendanceSubject', session.subject);
+    navigate('/professor/attendance');
+  };
 
   return (
     <div className="p-6">
@@ -126,7 +136,8 @@ export function ProfessorSchedule() {
                           key={`${day}-${timeSlot}`} 
                           className={`bg-blue-50 border border-blue-200 p-2 rounded ${
                             selectedDay === day ? 'ring-2 ring-blue-400' : ''
-                          }`}
+                          } cursor-pointer hover:bg-blue-100 transition-colors`}
+                          onClick={() => handleSessionClick(session)}
                         >
                           <p className="font-semibold text-blue-800">{session.subject}</p>
                           <div className="flex items-center justify-between mt-1">
@@ -165,7 +176,11 @@ export function ProfessorSchedule() {
           {scheduleData[selectedDay] && scheduleData[selectedDay].length > 0 ? (
             <div className="space-y-4">
               {scheduleData[selectedDay].map((session, index) => (
-                <div key={index} className="flex items-center p-4 border rounded-lg bg-white hover:bg-gray-50 transition-colors">
+                <div 
+                  key={index} 
+                  className="flex items-center p-4 border rounded-lg bg-white hover:bg-blue-50 transition-colors cursor-pointer"
+                  onClick={() => handleSessionClick(session)}
+                >
                   <div className="w-16 text-center">
                     <div className="text-sm font-semibold">{session.time.split('-')[0]}</div>
                     <div className="text-xs text-gray-500">-</div>

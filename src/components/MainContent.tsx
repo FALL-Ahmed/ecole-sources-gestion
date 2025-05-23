@@ -9,7 +9,6 @@ import { AttendanceManagement } from './admin/AttendanceManagement';
 import { ReportManagement } from './admin/ReportManagement';
 import { Statistics } from './admin/Statistics';
 import { Settings } from './admin/Settings';
-import { ProfessorCourses } from './professor/ProfessorCourses';
 import { CourseMaterials } from './professor/CourseMaterials';
 import { ProfessorAttendance } from './professor/ProfessorAttendance';
 import { ProfessorSchedule } from './professor/ProfessorSchedule';

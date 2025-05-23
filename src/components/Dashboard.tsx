@@ -1,12 +1,25 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '@/contexts/AuthContext';
 import { Users, BookOpen, GraduationCap, TrendingUp } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function Dashboard() {
   const { user } = useAuth();
+  const [selectedClass, setSelectedClass] = useState<string>('all');
+
+  // Mock data for professor classes
+  const professorClasses = ['6ème A', '6ème B', '5ème A', '4ème B', '3ème A'];
+  
+  const studentPerformanceData = [
+    { month: 'Sep', moyenne: 13.5 },
+    { month: 'Oct', moyenne: 14.2 },
+    { month: 'Nov', moyenne: 13.8 },
+    { month: 'Dec', moyenne: 15.0 },
+    { month: 'Jan', moyenne: 14.3 },
+    { month: 'Feb', moyenne: 14.8 },
+  ];
 
   const statsData = [
     { name: 'Élèves', value: 245, icon: Users, color: 'bg-blue-500' },
@@ -30,6 +43,11 @@ export function Dashboard() {
     { name: '4ème', value: 58, color: '#ffc658' },
     { name: '3ème', value: 57, color: '#ff7c7c' },
   ];
+
+  const filterDataByClass = (data: any[]) => {
+    if (selectedClass === 'all') return data;
+    return data.filter(item => item.class === selectedClass || item.name === selectedClass);
+  };
 
   const renderDashboardContent = () => {
     switch (user?.role) {
@@ -110,6 +128,23 @@ export function Dashboard() {
       case 'professor':
         return (
           <>
+            <div className="mb-6 flex justify-between items-center">
+              <h2 className="text-xl font-semibold">Vue d'ensemble</h2>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Filtrer par classe:</span>
+                <Select value={selectedClass} onValueChange={setSelectedClass}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Toutes les classes" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toutes les classes</SelectItem>
+                    {professorClasses.map((cls) => (
+                      <SelectItem key={cls} value={cls}>{cls}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <Card>
                 <CardContent className="p-6">
@@ -134,24 +169,96 @@ export function Dashboard() {
               </Card>
             </div>
 
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Emploi du Temps de la Semaine</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                      <span className="font-medium">Mathématiques - {selectedClass === 'all' ? '6ème A' : selectedClass}</span>
+                      <span className="text-sm text-gray-600">Lundi 08:00 - 09:00</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                      <span className="font-medium">Mathématiques - {selectedClass === 'all' ? '5ème B' : selectedClass}</span>
+                      <span className="text-sm text-gray-600">Lundi 10:00 - 11:00</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+                      <span className="font-medium">Mathématiques - {selectedClass === 'all' ? '4ème A' : selectedClass}</span>
+                      <span className="text-sm text-gray-600">Mardi 14:00 - 15:00</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Évolution des Notes</CardTitle>
+                  <CardDescription>Moyenne de la classe par mois</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={220}>
+                    <BarChart data={studentPerformanceData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis domain={[0, 20]} />
+                      <Tooltip />
+                      <Bar dataKey="moyenne" fill="#3b82f6" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
             <Card>
               <CardHeader>
-                <CardTitle>Emploi du Temps de la Semaine</CardTitle>
+                <CardTitle>Suivi des Élèves</CardTitle>
+                <CardDescription>Performance académique des élèves</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                    <span className="font-medium">Mathématiques - 6ème A</span>
-                    <span className="text-sm text-gray-600">Lundi 08:00 - 09:00</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                    <span className="font-medium">Mathématiques - 5ème B</span>
-                    <span className="text-sm text-gray-600">Lundi 10:00 - 11:00</span>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
-                    <span className="font-medium">Mathématiques - 4ème A</span>
-                    <span className="text-sm text-gray-600">Mardi 14:00 - 15:00</span>
-                  </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-3 px-4">Élève</th>
+                        <th className="text-left py-3 px-4">Classe</th>
+                        <th className="text-left py-3 px-4">Moyenne</th>
+                        <th className="text-left py-3 px-4">Évolution</th>
+                        <th className="text-left py-3 px-4">Absences</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-4">Alice Dupont</td>
+                        <td className="py-3 px-4">6ème A</td>
+                        <td className="py-3 px-4">15.2/20</td>
+                        <td className="py-3 px-4 text-green-600">+1.3</td>
+                        <td className="py-3 px-4">2</td>
+                      </tr>
+                      <tr className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-4">Baptiste Martin</td>
+                        <td className="py-3 px-4">6ème A</td>
+                        <td className="py-3 px-4">14.8/20</td>
+                        <td className="py-3 px-4 text-green-600">+0.7</td>
+                        <td className="py-3 px-4">0</td>
+                      </tr>
+                      <tr className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-4">Clara Bernard</td>
+                        <td className="py-3 px-4">5ème B</td>
+                        <td className="py-3 px-4">12.5/20</td>
+                        <td className="py-3 px-4 text-red-600">-0.8</td>
+                        <td className="py-3 px-4">3</td>
+                      </tr>
+                      <tr className="border-b hover:bg-gray-50">
+                        <td className="py-3 px-4">David Petit</td>
+                        <td className="py-3 px-4">6ème B</td>
+                        <td className="py-3 px-4">16.1/20</td>
+                        <td className="py-3 px-4 text-green-600">+0.2</td>
+                        <td className="py-3 px-4">1</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </CardContent>
             </Card>
