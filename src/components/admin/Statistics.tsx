@@ -65,10 +65,71 @@ const monthlyAttendanceData = [
 ];
 
 const terms = ['Trimestre 1', 'Trimestre 2', 'Trimestre 3', 'Année complète'];
+const classes = ['Toutes les classes', '6ème A', '6ème B', '5ème A', '5ème B', '4ème A', '4ème B', '3ème A', '3ème B'];
+
+// Données par classe pour simulation
+const classSpecificData = {
+  '6ème A': {
+    attendance: { presence: 95, absence: 5 },
+    grades: { moyenne: 14.2 },
+    monthlyAttendance: [
+      { name: 'Septembre', presence: 97, absence: 3 },
+      { name: 'Octobre', presence: 96, absence: 4 },
+      { name: 'Novembre', presence: 95, absence: 5 },
+      { name: 'Décembre', presence: 94, absence: 6 },
+      { name: 'Janvier', presence: 93, absence: 7 },
+      { name: 'Février', presence: 94, absence: 6 },
+      { name: 'Mars', presence: 95, absence: 5 },
+      { name: 'Avril', presence: 96, absence: 4 },
+      { name: 'Mai', presence: 95, absence: 5 },
+      { name: 'Juin', presence: 93, absence: 7 },
+    ],
+    subjectGrades: [
+      { name: 'Mathématiques', taux: 87 },
+      { name: 'Français', taux: 84 },
+      { name: 'Histoire-Géo', taux: 80 },
+      { name: 'Sciences', taux: 90 },
+      { name: 'Anglais', taux: 82 },
+    ]
+  },
+  // Données supplémentaires pour d'autres classes...
+};
 
 export function Statistics() {
   const [selectedTerm, setSelectedTerm] = useState<string>('Année complète');
+  const [selectedClass, setSelectedClass] = useState<string>('Toutes les classes');
   const [selectedTab, setSelectedTab] = useState<string>('overview');
+
+  // Fonction pour filtrer les données selon la classe sélectionnée
+  const getFilteredData = (dataType: string) => {
+    if (selectedClass === 'Toutes les classes') {
+      switch (dataType) {
+        case 'attendance':
+          return attendanceData;
+        case 'grades':
+          return gradesData;
+        case 'monthlyAttendance':
+          return monthlyAttendanceData;
+        default:
+          return [];
+      }
+    } else if (classSpecificData[selectedClass as keyof typeof classSpecificData]) {
+      const classData = classSpecificData[selectedClass as keyof typeof classSpecificData];
+      switch (dataType) {
+        case 'attendance':
+          return [{ name: selectedClass, ...classData.attendance }];
+        case 'grades':
+          return [{ name: selectedClass, ...classData.grades }];
+        case 'monthlyAttendance':
+          return classData.monthlyAttendance;
+        case 'subjectGrades':
+          return classData.subjectGrades;
+        default:
+          return [];
+      }
+    }
+    return [];
+  };
 
   return (
     <div className="p-6">
@@ -77,7 +138,7 @@ export function Statistics() {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Filtres</CardTitle>
-          <CardDescription>Visualisez les statistiques par période</CardDescription>
+          <CardDescription>Visualisez les statistiques par période et par classe</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -91,6 +152,21 @@ export function Statistics() {
                   {terms.map((term) => (
                     <SelectItem key={term} value={term}>
                       {term}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Classe</label>
+              <Select onValueChange={setSelectedClass} value={selectedClass}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner une classe" />
+                </SelectTrigger>
+                <SelectContent>
+                  {classes.map((cls) => (
+                    <SelectItem key={cls} value={cls}>
+                      {cls}
                     </SelectItem>
                   ))}
                 </SelectContent>
