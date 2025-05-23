@@ -15,7 +15,8 @@ import {
   Settings,
   FileSpreadsheet,
   Upload,
-  Clock
+  Clock,
+  CheckSquare
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -41,6 +42,7 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           { id: 'schedule', label: 'Emploi du Temps', icon: Calendar },
           { id: 'attendance', label: 'Gestion Absences', icon: UserCheck },
           { id: 'reports', label: 'Bulletins Scolaires', icon: FileSpreadsheet },
+          { id: 'chapter-monitoring', label: 'Suivi des Chapitres', icon: CheckSquare },
           { id: 'stats', label: 'Statistiques', icon: BarChart3 },
           { id: 'settings', label: 'Paramètres', icon: Settings }
         ];

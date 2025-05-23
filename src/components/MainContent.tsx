@@ -9,6 +9,7 @@ import { AttendanceManagement } from './admin/AttendanceManagement';
 import { ReportManagement } from './admin/ReportManagement';
 import { Statistics } from './admin/Statistics';
 import { Settings } from './admin/Settings';
+import { ChapterProgressMonitoring } from './admin/ChapterProgressMonitoring';
 import { CourseMaterials } from './professor/CourseMaterials';
 import { ProfessorAttendance } from './professor/ProfessorAttendance';
 import { ProfessorSchedule } from './professor/ProfessorSchedule';
@@ -49,6 +50,8 @@ export function MainContent({ activeSection }: MainContentProps) {
           return <Statistics />;
         case 'settings':
           return <Settings />;
+        case 'chapter-monitoring':
+          return <ChapterProgressMonitoring />;
         default:
           return <Dashboard />;
       }

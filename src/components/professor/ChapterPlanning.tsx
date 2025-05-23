@@ -29,7 +29,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
-import { Calendar as CalendarIcon, Plus, CheckCircle, Edit, Calendar, AlertCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, Plus, CheckCircle, Edit, Calendar as CalendarLucide, AlertCircle } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
@@ -235,7 +235,7 @@ export function ChapterPlanning() {
                 <p className="text-2xl font-bold">{filteredChapters.length}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full text-blue-600">
-                <Calendar className="h-6 w-6" />
+                <CalendarLucide className="h-6 w-6" />
               </div>
             </div>
           </CardContent>
@@ -493,6 +493,7 @@ export function ChapterPlanning() {
                       selected={formData.plannedStartDate ? new Date(formData.plannedStartDate) : undefined}
                       onSelect={(date) => date && setFormData({...formData, plannedStartDate: format(date, 'yyyy-MM-dd')})}
                       initialFocus
+                      className="pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
@@ -523,6 +524,7 @@ export function ChapterPlanning() {
                       disabled={(date) => 
                         formData.plannedStartDate ? date < new Date(formData.plannedStartDate) : false
                       }
+                      className="pointer-events-auto"
                     />
                   </PopoverContent>
                 </Popover>
