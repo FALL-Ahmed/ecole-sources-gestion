@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { StudentMaterials } from './StudentMaterials';
+import { ChapterProgress } from './ChapterProgress';
 
 // Données des cours
 const courses = [
@@ -109,6 +110,7 @@ export function StudentCourses() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>('all');
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [viewType, setViewType] = useState<'overview' | 'materials' | 'chapters'>('overview');
   
   const filteredCourses = courses.filter(course => 
     course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -116,8 +118,45 @@ export function StudentCourses() {
     course.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleBackToCourses = () => {
+    setSelectedCourse(null);
+    setViewType('overview');
+  };
+
   if (selectedCourse) {
-    return <StudentMaterials initialCourse={selectedCourse} onBack={() => setSelectedCourse(null)} />;
+    if (viewType === 'materials') {
+      return <StudentMaterials initialCourse={selectedCourse} onBack={handleBackToCourses} />;
+    } else if (viewType === 'chapters') {
+      return (
+        <div className="p-6">
+          <div className="flex items-center mb-6">
+            <Button variant="outline" onClick={handleBackToCourses} className="mr-4">
+              ← Retour aux cours
+            </Button>
+            <h1 className="text-2xl font-bold">{selectedCourse} - Programme</h1>
+          </div>
+          
+          <Tabs defaultValue="chapters" className="mb-6">
+            <TabsList>
+              <TabsTrigger 
+                value="chapters" 
+                onClick={() => setViewType('chapters')}
+              >
+                Chapitres et progression
+              </TabsTrigger>
+              <TabsTrigger 
+                value="materials" 
+                onClick={() => setViewType('materials')}
+              >
+                Supports de cours
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          
+          <ChapterProgress courseName={selectedCourse} />
+        </div>
+      );
+    }
   }
 
   return (
@@ -176,13 +215,26 @@ export function StudentCourses() {
                   <p><span className="font-medium">Prochain cours:</span> {course.nextSession}</p>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex flex-col space-y-2">
                 <Button 
                   variant="outline" 
                   className="w-full"
-                  onClick={() => setSelectedCourse(course.name)}
+                  onClick={() => {
+                    setSelectedCourse(course.name);
+                    setViewType('chapters');
+                  }}
                 >
-                  Voir les détails
+                  Voir le programme
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    setSelectedCourse(course.name);
+                    setViewType('materials');
+                  }}
+                >
+                  Voir les supports
                 </Button>
               </CardFooter>
             </Card>

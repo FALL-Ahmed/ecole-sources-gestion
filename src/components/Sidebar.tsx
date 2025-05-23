@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -50,6 +51,7 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           { id: 'schedule-view', label: 'Emploi du Temps', icon: Calendar },
           { id: 'grades-input', label: 'Saisie des Notes', icon: GraduationCap },
           { id: 'course-materials', label: 'Supports de Cours', icon: Upload },
+          { id: 'chapter-planning', label: 'Planification Chapitres', icon: FileText }
         ];
       case 'student':
         return [
@@ -71,9 +73,9 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-blue-900">Sources des Sciences</h2>
         <div className="flex items-center gap-3 mt-2">
-          {user && user.photoUrl && (
+          {user && user.avatar && (
             <div className="w-8 h-8 rounded-full overflow-hidden">
-              <img src={user.photoUrl} alt={user.name} className="w-full h-full object-cover" />
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
             </div>
           )}
           <div>

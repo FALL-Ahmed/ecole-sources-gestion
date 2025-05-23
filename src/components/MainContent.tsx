@@ -17,6 +17,7 @@ import { StudentSchedule } from './student/StudentSchedule';
 import { StudentCourses } from './student/StudentCourses';
 import { StudentGrades } from './student/StudentGrades';
 import { StudentAttendance } from './student/StudentAttendance';
+import { ChapterPlanning } from './professor/ChapterPlanning';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface MainContentProps {
@@ -66,6 +67,8 @@ export function MainContent({ activeSection }: MainContentProps) {
           return <ProfessorSchedule />;
         case 'grades-input':
           return <GradeInput />;
+        case 'chapter-planning':
+          return <ChapterPlanning />;
         default:
           return <Dashboard />;
       }
