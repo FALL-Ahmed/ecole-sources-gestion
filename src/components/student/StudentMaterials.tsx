@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -23,8 +23,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
-import { FileIcon, FileText, Search, Download, Eye } from 'lucide-react';
+import { FileIcon, FileText, Search, Download, Eye, ArrowLeft } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+
+interface StudentMaterialsProps {
+  initialCourse?: string;
+  onBack?: () => void;
+}
 
 const courses = ['Mathématiques', 'Français', 'Histoire-Géographie', 'Anglais', 'Sciences', 'Espagnol', 'Arts Plastiques', 'EPS', 'Musique'];
 const chapters = {
@@ -64,11 +69,17 @@ const getFileIcon = (type: string) => {
   }
 };
 
-export function StudentMaterials() {
-  const [selectedCourse, setSelectedCourse] = useState<string>('');
+export function StudentMaterials({ initialCourse, onBack }: StudentMaterialsProps) {
+  const [selectedCourse, setSelectedCourse] = useState<string>(initialCourse || '');
   const [selectedChapter, setSelectedChapter] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<string>('all');
+
+  useEffect(() => {
+    if (initialCourse && !selectedCourse) {
+      setSelectedCourse(initialCourse);
+    }
+  }, [initialCourse, selectedCourse]);
 
   const handleCourseChange = (course: string) => {
     setSelectedCourse(course);
@@ -112,7 +123,15 @@ export function StudentMaterials() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Documents de Cours</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Documents de Cours</h1>
+        {onBack && (
+          <Button variant="ghost" onClick={onBack}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Retour aux cours
+          </Button>
+        )}
+      </div>
 
       <Card className="mb-6">
         <CardHeader>
@@ -242,7 +261,7 @@ export function StudentMaterials() {
           <Button 
             variant="link" 
             onClick={() => {
-              setSelectedCourse('');
+              setSelectedCourse(initialCourse || '');
               setSelectedChapter('');
               setSearchQuery('');
             }}

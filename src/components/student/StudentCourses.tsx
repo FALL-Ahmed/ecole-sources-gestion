@@ -18,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
+import { StudentMaterials } from './StudentMaterials';
 
 // Données des cours
 const courses = [
@@ -107,12 +108,17 @@ const courses = [
 export function StudentCourses() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeTab, setActiveTab] = useState<string>('all');
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   
   const filteredCourses = courses.filter(course => 
     course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     course.teacher.toLowerCase().includes(searchQuery.toLowerCase()) ||
     course.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (selectedCourse) {
+    return <StudentMaterials initialCourse={selectedCourse} onBack={() => setSelectedCourse(null)} />;
+  }
 
   return (
     <div className="p-6">
@@ -171,7 +177,13 @@ export function StudentCourses() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" className="w-full">Voir les détails</Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setSelectedCourse(course.name)}
+                >
+                  Voir les détails
+                </Button>
               </CardFooter>
             </Card>
           ))}

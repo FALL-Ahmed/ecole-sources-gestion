@@ -47,11 +47,10 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
       case 'professor':
         return [
           ...commonItems,
-          { id: 'my-courses', label: 'Mes Cours', icon: BookOpen },
-          { id: 'course-materials', label: 'Supports de Cours', icon: Upload },
           { id: 'attendance-mgmt', label: 'Gestion Absences', icon: UserCheck },
           { id: 'schedule-view', label: 'Emploi du Temps', icon: Calendar },
           { id: 'grades-input', label: 'Saisie des Notes', icon: GraduationCap },
+          { id: 'course-materials', label: 'Supports de Cours', icon: Upload },
         ];
       case 'student':
         return [
@@ -60,7 +59,6 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
           { id: 'my-courses', label: 'Mes Cours', icon: BookOpen },
           { id: 'my-grades', label: 'Notes & Bulletins', icon: GraduationCap },
           { id: 'my-attendance', label: 'Mes Absences', icon: Clock },
-          { id: 'course-materials', label: 'Supports de Cours', icon: FileText }
         ];
       default:
         return commonItems;
@@ -73,8 +71,17 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
     <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col shadow-sm">
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-blue-900">Sources des Sciences</h2>
-        <p className="text-sm text-gray-600 mt-1">{user?.name}</p>
-        <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+        <div className="flex items-center gap-3 mt-2">
+          {user?.photo && (
+            <div className="w-8 h-8 rounded-full overflow-hidden">
+              <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
+            </div>
+          )}
+          <div>
+            <p className="text-sm text-gray-600">{user?.name}</p>
+            <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+          </div>
+        </div>
       </div>
       
       <nav className="flex-1 p-4 overflow-y-auto">

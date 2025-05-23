@@ -18,7 +18,6 @@ import { StudentSchedule } from './student/StudentSchedule';
 import { StudentCourses } from './student/StudentCourses';
 import { StudentGrades } from './student/StudentGrades';
 import { StudentAttendance } from './student/StudentAttendance';
-import { StudentMaterials } from './student/StudentMaterials';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface MainContentProps {
@@ -60,8 +59,6 @@ export function MainContent({ activeSection }: MainContentProps) {
       switch (activeSection) {
         case 'dashboard':
           return <Dashboard />;
-        case 'my-courses':
-          return <ProfessorCourses />;
         case 'course-materials':
           return <CourseMaterials />;
         case 'attendance-mgmt':
@@ -88,8 +85,6 @@ export function MainContent({ activeSection }: MainContentProps) {
           return <StudentGrades />;
         case 'my-attendance':
           return <StudentAttendance />;
-        case 'course-materials':
-          return <StudentMaterials />;
         default:
           return <Dashboard />;
       }

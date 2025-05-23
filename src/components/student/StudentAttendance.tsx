@@ -19,7 +19,6 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -89,12 +88,6 @@ export function StudentAttendance() {
   const [selectedTerm, setSelectedTerm] = useState<string>('Année entière');
   const [date, setDate] = useState<Date>(new Date());
 
-  const pieData = [
-    { name: 'Jours présent', value: attendanceStats.daysPresent, color: '#22c55e' },
-    { name: 'Absences justifiées', value: attendanceStats.daysJustified, color: '#f59e0b' },
-    { name: 'Absences injustifiées', value: attendanceStats.daysUnjustified, color: '#ef4444' },
-  ];
-
   const absencesByTerm = (term: string) => {
     if (term === 'Année entière') {
       return absenceData;
@@ -145,78 +138,51 @@ export function StudentAttendance() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Répartition des absences</CardTitle>
-          <CardDescription>Visualisation du taux de présence et d'absence</CardDescription>
+          <CardTitle>Filtres</CardTitle>
+          <CardDescription>Sélectionnez la période et la date</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Legend />
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-2">Période</p>
+              <Select value={selectedTerm} onValueChange={setSelectedTerm}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Sélectionner une période" />
+                </SelectTrigger>
+                <SelectContent>
+                  {terms.map((term) => (
+                    <SelectItem key={term} value={term}>
+                      {term}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
-            <div className="flex flex-col justify-center">
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Période</p>
-                  <Select value={selectedTerm} onValueChange={setSelectedTerm}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Sélectionner une période" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {terms.map((term) => (
-                        <SelectItem key={term} value={term}>
-                          {term}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Date</p>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "PPP", { locale: fr }) : "Sélectionner une date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={(date) => date && setDate(date)}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-2">Date</p>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP", { locale: fr }) : "Sélectionner une date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(date) => date && setDate(date)}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </CardContent>
